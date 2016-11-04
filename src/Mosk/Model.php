@@ -11,13 +11,13 @@ abstract class Model extends Object implements IModel {
 	/** @var Smuuf\Mosk\Manager Manager provides access to other models. */
 	protected $manager;
 
-	/** @var array Storage for model instances **/
-	private $models = array();
+	/** @var array Storage for this model's submodels. **/
+	private $models = [];
 
 	final public function setManager(Manager $manager) {
 
 		if ($this->manager) {
-			throw new \LogicException("Manager was already set.");
+			throw new \LogicException("Manager is already set.");
 		}
 
 		$this->manager = $manager;
@@ -31,6 +31,14 @@ abstract class Model extends Object implements IModel {
 
 		// To be overloaded, if in need.
 
+	}
+
+	/**
+	 * Do not call this directly from a client model.
+	 * This is for internal use only.
+	 */
+	protected function ___clear() {
+		$this->models = [];
 	}
 
 	/**

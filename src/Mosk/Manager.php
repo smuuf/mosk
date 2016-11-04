@@ -35,6 +35,15 @@ class Manager extends Model {
 	}
 
 	/**
+	 * Ability to reset this Manager's models.
+	 * For testing purposes, when client needs
+	 * to clear the Manager's instantiated sub-models.
+	 */
+	public function clear() {
+		parent::___clear();
+	}
+
+	/**
 	 * Add a possible namespace to be used from now on.
 	 */
 	public function addNamespace($namespace) {
@@ -60,7 +69,6 @@ class Manager extends Model {
 			$this->namingConvention->getName($name, $callingModel),
 			$this->namingConvention->getNamespace($name, $callingModel),
 		];
-
 
 	}
 
