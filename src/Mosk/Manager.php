@@ -103,17 +103,22 @@ class Manager extends Model {
 				$arguments = array();
 				foreach ($constructor->getParameters() as $arg) {
 
+					// If a 'default' with given name is defined, put it in the constructor's arguments array.
 					if (isset($this->defaults[$arg->name])) {
 
-						// If a 'default' with given name is defined, put it in the constructor's arguments array.
 						$arguments[] = $this->defaults[$arg->name];
 
 					} else {
 
-						throw new \LogicException(
-							"Cannot instantiate model class '$className'.
-							Constructor dependency '\${$arg->name}' is missing."
-						);
+						// Optional arguments will have their default value passed as argument.
+						if ($arg->isOptional()) {
+							$arguments[] = $arg->getDefaultValue();
+						} else {
+							throw new \LogicException(
+								"Cannot instantiate model class '$className'.
+								Constructor dependency '\${$arg->name}' is missing."
+							);
+						}
 
 					}
 
