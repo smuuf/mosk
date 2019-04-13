@@ -19,7 +19,7 @@ class Manager extends Model {
 	protected $namingConvention;
 
 	public function __construct(
-		$prefixNamespace = null,
+		string $prefixNamespace = null,
 		array $defaults = [],
 		INamingConvention $namingConvention = null
 	) {
@@ -39,31 +39,34 @@ class Manager extends Model {
 	 * For testing purposes, when client needs
 	 * to clear the Manager's instantiated sub-models.
 	 */
-	public function clear() {
+	public function clear(): void {
 		parent::___clear();
 	}
 
 	/**
 	 * Add a possible namespace to be used from now on.
 	 */
-	public function addNamespace($namespace) {
+	public function addNamespace($namespace): void {
 		$this->addedNamespaces[] = $namespace;
 	}
 
 	/**
 	 * For late binding defaults.
 	 */
-	public function setDefaults(array $defaults) {
+	public function setDefaults(array $defaults): void {
 		$this->defaults = array_merge($this->defaults, $defaults);
 	}
 
-	protected function getModelNameTuple($name, IModel $callingModel) {
+	protected function getModelNameTuple($name, IModel $callingModel): array {
 
-		// Skip building names for first-level models, which would be mistakenly based on this Manager's class name.'
+		// Skip building names for first-level models, which would be mistakenly
+		// based on this Manager's class name.
 		if (get_class($callingModel) === self::class) return [$name];
 
 		// If there is no naming convention defined, return the called name back.
-		if (!$this->namingConvention) return [$name];
+		if (!$this->namingConvention) {
+			return [$name];
+		}
 
 		return [
 			$this->namingConvention->getName($name, $callingModel),

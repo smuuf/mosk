@@ -2,7 +2,7 @@
 
 namespace Smuuf\Mosk;
 
-class Object {
+trait StrictObject {
 
 	/**
 	 * Prevent getting an undeclared property.

@@ -2,13 +2,15 @@
 
 namespace Smuuf\Mosk;
 
-abstract class Model extends Object implements IModel {
+abstract class Model implements IModel {
+
+	use StrictObject;
 
 	const CLASS_SUFFIXES = [
 		'Model',
 	];
 
-	/** @var Smuuf\Mosk\Manager Manager provides access to other models. */
+	/** @var Manager Manager provides access to other models. */
 	protected $manager;
 
 	/** @var array Storage for this model's submodels. **/
@@ -43,15 +45,13 @@ abstract class Model extends Object implements IModel {
 
 	/**
 	 * Getter for accessing separate models.
-	 * Can be overridden.
 	 *
 	 * @param string $modelName Model to access.
-	 * @return \BaseModel
 	 */
-	public function __get($name) {
+	public function __get(string $name) {
 
-		// Get name and namespace that will be passed to self::getModel() method, based on the naming convention passed
-		// to the Manager.
+		// Get name and namespace that will be passed to self::getModel(), based
+		// on the naming convention passed to the Manager.
 		$tuple = $this->manager->getModelNameTuple($name, $this);
 		return $this->getModel(...$tuple);
 
@@ -63,7 +63,11 @@ abstract class Model extends Object implements IModel {
 			return $this->models[$name];
 		}
 
-		$potentialClasses = $this->manager->getPotentialClasses($name, $namespace, static::CLASS_SUFFIXES);
+		$potentialClasses = $this->manager->getPotentialClasses(
+			$name,
+			$namespace,
+			static::CLASS_SUFFIXES
+		);
 
 		foreach ($potentialClasses as $class) {
 
@@ -71,8 +75,9 @@ abstract class Model extends Object implements IModel {
 
 				$instance = $this->manager->buildInstance($class, $name);
 
-				// Not all models do have to be Models.
-				// But those that are will have the manager available, so it can access other models though it.
+				// Not all models do have to be Models. But those that are will
+				// have the manager available, so it can access other models
+				// through it.
 				if ($instance instanceof IModel) {
 					$instance->setManager($this->manager);
 					$instance->startup();
@@ -83,7 +88,13 @@ abstract class Model extends Object implements IModel {
 			}
 		}
 
-		throw new \LogicException(sprintf("Cannot get model '%s'. Tried: %s", $name, implode(', ', $potentialClasses)));
+		$msg = sprintf(
+			"Cannot get model '%s'. Tried: %s",
+			$name,
+			implode(', ', $potentialClasses)
+		);
+
+		throw new \LogicException($msg);
 
 	}
 
