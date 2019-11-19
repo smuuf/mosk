@@ -182,7 +182,7 @@ class Manager extends Model {
 			if ($added) $keep = $keep . '\\' . $added;
 
 			// If the namespace is already in the namespace suffix specified, do not put it in there twice.
-			$finalNs = (strpos($nsSuffix, $keep) !== 0) ? "{$keep}{$nsSuffix}" : $nsSuffix;
+			$finalNs = ($keep && strpos($nsSuffix, $keep) !== 0) ? "{$keep}{$nsSuffix}" : $nsSuffix;
 
 			foreach ($classSuffixes as $classSuffix) {
 				$list[] = $this->buildFullClass($modelName, $finalNs, $classSuffix);
